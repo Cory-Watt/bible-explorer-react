@@ -3,38 +3,46 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const DeleteVerse = () => {
+  // State for storing the verse ID and success message
   const [verseId, setVerseId] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Hooks for navigation and accessing URL parameters
   const navigate = useNavigate();
   const params = useParams();
 
+  // Effect to set verseId from URL parameters
   useEffect(() => {
     if (params.verseId) {
       setVerseId(parseInt(params.verseId, 10));
     }
   }, [params.verseId]);
 
+  // Function to handle verse deletion
   const onDelete = () => {
     if (verseId !== null) {
       axios.delete(`http://localhost:3000/verses/${verseId}`)
         .then(() => {
+          // Set success message on successful deletion
           setSuccessMessage(`Verse with ID ${verseId} deleted successfully.`);
-          // Optionally reset the verseId here if you want the user to enter a new one
         })
         .catch(error => {
+          // Log and reset on error
           console.error('Error deleting verse', error);
-          setSuccessMessage(''); // Reset success message in case of error
+          setSuccessMessage('');
         });
     }
   };
 
+  // Function to reset component for a new delete action
   const onNewDelete = () => {
-    setSuccessMessage(''); // Clear the success message
-    setVerseId(null); // Reset the verseId for new input
+    setSuccessMessage('');
+    setVerseId(null);
   };
 
+  // Function to navigate back to the home page
   const onCancel = () => {
-    navigate('/'); // Navigate to the home route
+    navigate('/');
   };
 
   return (

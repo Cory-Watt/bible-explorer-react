@@ -2,37 +2,45 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const VerseCreate = () => {
+  // State for storing the new verse details
   const [newVerse, setNewVerse] = useState({
     book: "",
     chapter: "",
     verseNumber: "",
     text: "",
   });
+
+  // State to track if creation is complete and to handle success message
   const [isCreationComplete, setIsCreationComplete] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Function to handle form submission
   const handleSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent default form submission behaviour
 
+    // Make a POST request to create a new verse
     axios
       .post("http://localhost:3000/verses", newVerse)
       .then((response) => {
+        // On successful creation, show success message and reset the form
         setSuccessMessage(`Verse created successfully!`);
         setIsCreationComplete(true);
-        // Reset the form for new input
         setNewVerse({ book: "", chapter: "", verseNumber: "", text: "" });
       })
       .catch((error) => {
+        // Log and reset on error
         console.error("Error creating verse", error);
         setSuccessMessage("");
       });
   };
 
+  // Function to reset form and states for new creation
   const handleNewCreation = () => {
     setSuccessMessage("");
     setIsCreationComplete(false);
   };
 
+  // Function to handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewVerse((prevState) => ({
@@ -45,11 +53,13 @@ const VerseCreate = () => {
     <div>
       <h2>Create a New Bible Verse</h2>
       {isCreationComplete ? (
+        // Display success message and option to create another verse
         <div>
           <p>{successMessage}</p>
           <button onClick={handleNewCreation}>Create Another Verse</button>
         </div>
       ) : (
+        // Verse creation form
         <form onSubmit={handleSubmit}>
           <label htmlFor="book">Book:</label>
           <input
